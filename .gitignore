@@ -1,0 +1,54 @@
+# LaTeX 临时文件
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.dvi
+*.xdv
+*.run.xml
+*.bcf
+*.idx
+*.ilg
+*.ind
+*.lol
+*.nav
+*.pre
+*.snm
+*.vrb
+*.soc
+*.spl
+*.thm
+*.upa
+*.upb
+*.end
+*.ent
+*.loe
+*.lol
+*.nav
+*.pre
+*.snm
+*.tdo
+*.toc
+*.vrb
+*.xdy
+
+# 编译生成的 PDF 文件（可选，取决于是否要版本控制 PDF）
+# *.pdf
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器临时文件
+*~
+*.swp
+*.swo
+*# 

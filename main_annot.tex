@@ -1,0 +1,408 @@
+% XeLaTeX or LuaLaTeX needed to compile due to fontspec package
+% 编译本文档需要使用 XeLaTeX 或 LuaLaTeX 编译器，因为使用了 fontspec 宏包
+
+\documentclass[11pt]{article} % 定义文档类型为 article，全局默认字号为 11pt
+                               % 可选：10pt, 12pt。article 是标准文档类。
+
+%%%%%%%%%%%%%%%%%%%%
+% 引入宏包 (Packages)
+%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{hyperref}       % 用于创建超链接 (例如网址、邮箱、内部引用)
+\usepackage{xcolor}         % 提供颜色支持，可以定义和使用颜色
+\usepackage{calc}           % 允许在 LaTeX 参数中进行简单的数学计算 (如长度加减)
+\usepackage{graphicx}       % 用于插入图片 (命令: \includegraphics)
+\usepackage{tikz}           % 强大的绘图宏包，用于创建复杂的图形，这里用于页眉页脚和背景
+\usepackage{fontspec}       % (仅限 XeLaTeX/LuaLaTeX) 允许方便地使用系统安装的 OpenType/TrueType 字体，特别是中文字体
+\usepackage{fontawesome5}   % 提供 Font Awesome 5 图标集 (如邮箱、电话、GitHub图标)
+\usepackage{titlesec}       % 用于高度自定义章节标题 (section, subsection 等) 的格式
+\usepackage{enumitem}       % 提供对列表环境 (itemize, enumerate) 的精细控制 (间距、标签等)
+\usepackage{fancybox}       % 提供一些花哨的盒子命令 (如 \doublebox 给图片加双线框)
+
+% 设置 hyperref 宏包
+\hypersetup{hidelinks}      % 取消链接的边框和特殊颜色，使其看起来更自然
+                            % 可选：移除此行或设置 colorlinks=true, linkcolor=blue 等来显示链接颜色
+
+%%%%%%%%%%%%%%%%%%%%
+% 全局设置 (Global Settings)
+%%%%%%%%%%%%%%%%%%%%
+
+\setlength{\parindent}{0pt} % 设置全局段落首行缩进为 0pt (即不缩进)。段落间通常通过 \parskip (段间距) 区分。
+                            % 可选：设置为 2em (约两个大写M的宽度) 或其他你希望的缩进值。
+
+\pagenumbering{gobble}      % 取消页码显示。"gobble" 意味着 "吞掉" 页码。
+                            % 可选：改为 "arabic" (1, 2, 3...) 或其他样式以显示页码。简历通常不显示。
+
+% 自定义 itemize (无序列表) 样式
+\setlist[itemize]{
+    nosep                   % 移除列表项之间及列表与前后文本的垂直间距，使列表更紧凑。
+    , before={\vspace*{-\parskip}} % 移除 itemize 环境前可能因 \parskip 非零而产生的额外空白。
+    , leftmargin=*          % 设置列表的左边距。'*' 表示使用一个合理的默认值，使项目符号靠近页边。
+                            % 可选：leftmargin=2em (增加左缩进), itemsep=0.5ex (设置项间距) 等。
+}
+
+% 自定义 enumerate (有序列表) 样式
+\setlist[enumerate]{
+    leftmargin=*            % 设置列表的左边距，同 itemize 中的 leftmargin=*。
+}
+
+\renewcommand{\arraystretch}{1.2} % 设置表格中行高的倍数。1.2 表示行高为默认的1.2倍，增加垂直空间。
+                                 % 可选：1.0 (默认), 1.5 (更大间距) 等。
+
+\linespread{1.25}           % 设置正文的行间距。1.25 大约相当于 1.25 倍行距。
+                            % 可选：1.0 (单倍行距), 1.5 (1.5倍行距) 等。简历推荐略大于1以便阅读。
+
+% 自定义 \section (一级标题) 的格式 (使用 titlesec 宏包)
+\titleformat{\section}      % 命令作用于 \section
+  {\LARGE\bfseries\raggedright} % 标题文本的格式:
+                                % \LARGE: 字体大小设为 \LARGE (比 \Large 大)
+                                % \bfseries: 粗体
+                                % \raggedright: 左对齐
+                                % 可选：\Large, \huge (字号); \mdseries (正常字重); \centering (居中)
+  {}                          % 标题的标签 (如章节号)。这里为空，表示不显示章节号。
+  {0em}                       % 标签和标题文本之间的水平间距。
+  {}                          % 在标题文本之前插入的代码。这里为空。
+  [{\color{secondary_color}\titlerule}] % 在标题文本之后 (另起一行) 插入的代码:
+                                % \color{secondary_color}: 将颜色设为 secondary_color
+                                % \titlerule: titlesec 提供的命令，画一条默认粗细的横线
+                                % 可选：修改颜色, \titlerule[0.8pt] (改变线粗), 或去掉此行取消下划线
+
+% 自定义 \section 标题的间距 (使用 titlesec 宏包)
+% \titlespacing*{<command>}{<left>}{<before-sep>}{<after-sep>}
+% 星号版本表示 <left> 会覆盖段落缩进
+\titlespacing*{\section}
+  {0cm}                       % 标题左边的间距。
+  {*1.2}                      % 标题上方的垂直间距。'*1.2' 表示 1.2 倍的 \baselineskip (当前行基线间距)。
+  {*1.2}                      % 标题下方的垂直间距 (标题和正文第一行之间)。
+                              % 可选：调整这些值来改变标题周围的空白。
+
+% 页面边距设置 (使用 geometry 宏包)
+\usepackage[
+	a4paper,                    % 纸张类型为 A4
+	left=1.2cm,                 % 左边距
+	right=1.2cm,                % 右边距
+	top=1.5cm,                  % 上边距
+	bottom=1cm,                 % 下边距
+	nohead                      % 不为页眉预留标准空间 (因为使用 TikZ 自定义页眉)
+]{geometry}
+% 可选：根据需要调整各边距值。
+
+% 字体设置 (使用 fontspec 宏包 - 需要 XeLaTeX/LuaLaTeX)
+\setmainfont[                 % 设置文档的主要字体 (用于西文和中文，如果字体支持)
+    Path=fonts/,              % LaTeX 将在当前目录下的 "fonts/" 文件夹中寻找字体文件
+                              % 可选：如果字体已安装到系统，此行可省略或修改路径。
+    Extension=.otf,           % 字体文件的扩展名 (如 .otf, .ttf)
+    BoldFont=*-Bold,          % 指定粗体变体。'*' 代表主字体名 (NotoSerifSC)，所以会寻找 NotoSerifSC-Bold.otf
+                              % 可选：根据实际粗体文件名修改，如 BoldFont=*Bold (如果文件名是 NotoSerifSCBold.otf)
+    % ItalicFont=*-Italic,    % (可选) 指定斜体变体
+    % BoldItalicFont=*-BoldItalic % (可选) 指定粗斜体变体
+]{NotoSerifSC}                % 主字体名称 (这里是思源宋体 SC 版)
+                              % 可选：替换为你喜欢的其他字体名称，确保字体文件可用。
+
+% 自定义颜色 (使用 xcolor 宏包)
+% 使用 RGB 模型定义颜色，值范围 0-255
+\definecolor{primary_color}{RGB}{74,164,132}    % 定义主颜色 "取色器南师绿"
+                                                % 可选：修改 RGB 值或使用其他颜色模型 (如 HTML)
+\definecolor{secondary_color}{RGB}{74,164,132} % 定义次要颜色，当前与主色相同。
+                                                % 可选：修改RGB值以使用不同颜色。
+
+% 自定义长度变量
+\newlength{\iconwidth}      % 声明一个新的长度变量 \iconwidth
+\setlength{\iconwidth}{1.5em} % 设置 \iconwidth 的值为 1.5em。
+                              % 'em' 是相对单位，约等于当前字体大写 "M" 的宽度。用于 section 标题图标占位。
+                              % 可选：调整此值以适应图标大小或对齐需求。
+
+%%%%%%%%%%%%%%%%%%%%
+% 自定义命令 (Custom Commands)
+%%%%%%%%%%%%%%%%%%%%
+
+% 学院信息
+\newcommand{\school}{地理科学学院 | School of Geography} % 定义 \school 命令存储学院信息
+
+% 联系方式
+\newcommand{\contact}{%
+    % 根据个人喜好选择字号
+    \small                % 小号字 (当前选择)
+    % \footnotesize           % 更小号字
+    % \scriptsize           % 再小一号字
+    \textcolor{black}{%     % 设置联系方式文本颜色为黑色
+                            % 可选：若页脚背景为深色，可改为 \textcolor{white}
+        % 邮箱
+        \faEnvelope \quad \href{mailto:youremail@njnu.edu.cn}{youremail@njnu.edu.cn} % \faEnvelope: 邮箱图标; \quad: 水平空白; \href: 创建链接
+                                                                                  % 邮箱后缀已更新
+        \hspace{4em}        % 创建一个 4em 宽的水平空白，用于分隔联系方式条目
+                            % 可选：调整 \hspace 的值来改变间距
+        % 手机号
+        \faPhone \quad  130-xxxx-xxxx % \faPhone: 电话图标
+        % 别的联系方式，如微信、GitHub等
+        \hspace{4em}
+        \faGithub \quad \href{https://github.com/Reborn14}{GitHub 项目地址} % \faGithub: GitHub图标
+                            % 可选：替换为你自己的信息、图标和链接，增删条目
+    }%
+}
+
+%%%%%%%%%%%%%%%%%%%%
+% 文档正文开始
+%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+    %%%%%%%%%%%%%%%%%%%%
+    % 页眉、页脚和背景图 (使用 TikZ)
+    % 注意：这些 TikZ 环境使用 remember picture 和 overlay 选项，
+    % 它们会在文档编译两次后才能正确定位。
+    % 如果简历有多页，理想情况下应使用 fancyhdr 或 eso-pic 等宏包自动处理每页的页眉页脚，
+    % 而不是手动复制粘贴这部分代码。当前模板是为单页优化的。
+    %%%%%%%%%%%%%%%%%%%%
+
+    % --- 页眉：校标组合+学院名 ---
+    \begin{tikzpicture}[remember picture, overlay] % remember picture: 允许跨 TikZ 图引用节点; overlay: 内容不占空间，浮动在文本之上
+        % 页眉背景图
+        \node[anchor=north,         % 节点的锚点在其上边缘中点
+              inner sep=0pt,        % 节点内容与边框的内部间距为0
+             ]
+             (header)               % 给这个节点命名为 "header"
+             at (current page.north)% 定位节点的锚点在当前页面的顶部中点
+             {\includegraphics[width=\paperwidth]{images/header.png}}; % 插入与页面同宽的图片作为页眉背景
+                                                                    % 图片路径已更新为 images/header.png
+
+        % 校徽/学校标识 (放置在页眉背景图的左侧)
+        \node[anchor=west]          % 节点的锚点在其左边缘中点
+             (school_logo)          % 命名节点
+             at (header.west)       % 定位在 "header" 节点的左边缘中点
+             {
+                \hspace{0.5cm}      % 向右推移校徽，产生左边距
+                \includegraphics[width=0.3\textwidth]{images/header_nnu.png} % 插入校徽图片，宽度为文本区域的30%
+                                                                          % 图片路径已更新为 images/header_nnu.png, 宽度为0.3\textwidth
+             };
+
+        % 学院名称 (放置在页眉背景图的右侧)
+        \node[anchor=east]          % 节点的锚点在其右边缘中点
+             (school_name)          % 命名节点
+             at(header.east)        % 定位在 "header" 节点的右边缘中点
+             {
+                \textcolor{white}{\textbf{\school}} % 显示 \school 命令的内容 (学院名)，白色，粗体
+                \hspace{0.5cm}      % 向左推移学院名，产生右边距
+             };
+    \end{tikzpicture}
+    \vspace{-4.5em}                 % 负垂直间距，将后续内容向上拉。值已更新为 -4.5em。
+                                    % 注意：此值可能需要根据页眉图片高度、字体、行距等进行微调。
+
+    % --- 页脚：联系方式 ---
+    \begin{tikzpicture}[remember picture, overlay]
+        % 页脚背景图
+        \node[anchor=south,         % 节点的锚点在其下边缘中点
+              inner sep=0pt
+             ]
+             (footer)               % 命名节点 "footer"
+             at (current page.south)% 定位在当前页面的底部中点
+             {\includegraphics[width=1.1\paperwidth, height=1cm]{images/foot.png}}; % 插入页脚背景图
+                                                                    % 图片路径 images/foot.png
+                                                                    % width=1.1\paperwidth: 图片宽度为页面宽度的110%，会超出页面。
+                                                                    % height=1cm: 图片高度强制为1cm，可能导致图片变形。
+                                                                    % 注意：原代码中此行末尾的特殊空白字符已移除。
+
+        % 联系方式 (放置在页脚背景图的中心)
+        \node[anchor=center]        % 节点的锚点在其中心
+             at(footer.center)      % 定位在 "footer" 节点的中心
+             {\contact};            % 显示 \contact 命令的内容 (联系方式)
+    \end{tikzpicture}
+
+    % --- 背景水印 ---
+    \begin{tikzpicture}[remember picture, overlay]
+        \node[opacity=0.05]         % 设置节点 (图片) 的透明度为 5% (0.0 到 1.0)
+             at(current page.center)% 定位在当前页面的中心
+             {
+                \includegraphics[width=0.7\paperwidth, % 图片宽度为页面宽度的70%
+                                     keepaspectratio % 保持图片的原始宽高比
+                                    ]{images/nnu_logo.png} % 背景水印图片                                                          
+             };
+    \end{tikzpicture}
+
+    %%%%%%%%%%%%%%%%%%%%
+    % 简历正文 (Main Content)
+    %%%%%%%%%%%%%%%%%%%%
+
+    % --- 主内容区：左侧78%宽度，右侧20%宽度给照片 ---
+    % 使用 minipage 环境创建左右分栏效果
+    \begin{minipage}[t]{0.78\textwidth} % 左栏 minipage，宽度为文本区域的78%，[t]表示顶部对齐
+        % --- 个人信息 ---
+        \begin{minipage}[t]{\textwidth} % 个人信息部分占满其父 minipage 的宽度
+        \section[个人信息]{\makebox[\iconwidth][c]{\color{primary_color}{\faAddressCard}}\quad 个人信息}
+            % \section[可选短标题]{标题内容} : [可选短标题] 用于生成目录，简历中一般可省略。
+            % \makebox[\iconwidth][c]{...}: 创建一个固定宽度 (\iconwidth) 的盒子，内容在其中居中 [c]。用于放置图标。
+            % \color{primary_color}{\faAddressCard}: 设置图标颜色并插入图标。
+            % \quad: 图标和文字之间的固定间距。
+
+            % 个人信息内部再分两栏
+            \begin{minipage}[t]{0.5\textwidth} % 个人信息左半部分
+                \textbf{姓\qquad 名}：你的名字 % \qquad 是一个较宽的固定空白，用于对齐冒号
+
+                \vspace{0.5em} % 垂直间距
+                \textbf{出生年月}：你的出生年月
+            \end{minipage}% 注意这里的 % 号，用于避免 minipage 之间产生不必要的空格
+            \begin{minipage}[t]{0.35\textwidth} % 个人信息右半部分
+                \textbf{性\qquad 别}：你的性别
+                
+                \vspace{0.5em}
+                \textbf{政治面貌}：你的政治面貌
+            \end{minipage}
+            \vspace{1.2em} % 个人信息区块下方的垂直间距
+        \end{minipage}
+
+        % --- 教育背景 ---
+        \begin{minipage}[t]{\textwidth}
+        \section[教育背景]{\makebox[\iconwidth][c]{\color{primary_color}{\faGraduationCap}}\quad 教育背景}
+
+        {\large \textbf{南京师范大学}}，专科 \hfill 2000年9月--2010年6月
+        \begin{itemize} % 无序列表
+            \item 你的学院，你的专业
+            \item \textbf{主修课程}：课程1、课程2、课程3、课程4\ 等。
+        \end{itemize}
+
+        \vspace{0.5em} % 条目间垂直间距
+        {\large \textbf{南京师范大学}}，本科 \hfill 2010年9月--2020年6月
+        \begin{itemize}
+            \item 你的学院，你的专业
+            \item \textbf{主修课程}：课程1、课程2、课程3、课程4\ 等。
+            \item \textbf{GPA}：4.8 / 4.8（排名：1 / 250）
+        \end{itemize}
+
+        \vspace{0.5em}
+        {\large \textbf{南京师范大学}}，硕士 \hfill 2020年9月--至今
+        \begin{itemize}
+            \item 你的学院，你的专业，你的导师姓名\ 职称
+            \item \textbf{研究方向}：方向1、方向2、方向3、方向4\ 等。
+        \end{itemize}
+
+        \vspace{1.2em} % 教育背景区块下方的垂直间距
+        \end{minipage}
+    \end{minipage} % 结束左侧主内容区的 minipage
+    \hfill % 水平填充空白，将右侧 minipage 推到最右边
+    % --- 右侧边栏：照片 ---
+    \begin{minipage}[t]{0.2\textwidth} % 右栏 minipage，宽度为文本区域的20%，[t]表示顶部对齐
+        \vspace{2em} % 照片上方的垂直空白，用于调整照片的垂直位置
+        \setlength{\fboxsep}{0pt} % 设置 \fbox (以及 \doublebox) 内容与边框的间距为 0pt。
+        \doublebox{\includegraphics[width=\linewidth]{images/avatar.png}} % \doublebox: fancybox宏包提供的双线框
+                                                                    % \includegraphics[width=\linewidth]: 图片宽度等于当前 minipage 的宽度
+    \end{minipage} % 结束右侧照片栏的 minipage
+
+    % --- 科研成果 --- (此 minipage 跨越整个文本宽度)
+    \begin{minipage}[t]{\textwidth}
+    \section[科研成果]{\makebox[\iconwidth][c]{\color{primary_color}{\faAtom}}\quad 科研成果}
+
+    % 科研著作（研究生）
+    This is One of Your Paper Published in Conference A. % 论文标题或描述
+    \begin{itemize}
+        \item \textbf{Mingzi Nide}, Daoshi Nide. \hfill 发表于 \textbf{Conference A}（CCF-A类会议） % 作者，发表信息
+        \item 用一句话描述这份论文干了什么\dots\dots % 论文简介
+    \end{itemize}
+
+    \vspace{0.5em}
+    《另一份论文的标题》 % 论文标题
+    \begin{itemize}
+        \item  \textbf{你的名字}、你的师兄、你的导师 \hfill 发表于 \textbf{某篇期刊} （SCI-1区） % 作者，发表信息
+        \item 用一句话描述这份论文干了什么\dots\dots % 论文简介
+    \end{itemize}
+
+    \vspace{1.2em} % 科研成果区块下方的垂直间距
+    \end{minipage}
+
+    % --- 项目经历/科研经历/项目与教学 --- (此 minipage 跨越整个文本宽度)
+    \begin{minipage}[t]{\textwidth}
+    % 标题请根据需要修改
+    \section[项目与教学]{\makebox[\iconwidth][c]{\color{primary_color}{\faChalkboardTeacher}}\quad 项目与教学}
+
+    {\large \textbf{项目名称}} \hfill 2020年9月--2021年9月 % 项目名，时间
+    \begin{itemize}
+        \item \textbf{你在项目中扮演的角色} \hfill 横向/纵向项目-已完结/进行中 % 角色，项目类型/状态
+        \item 用一句话介绍你在这个项目中做了什么\dots\dots % 项目描述
+    \end{itemize}
+
+    \vspace{0.5em}
+    {\large \textbf{某某主题讨论班}}，主讲 / 参与 \hfill 2020年夏季 % 活动名，角色，时间
+    \begin{itemize}
+        \item \textbf{主要内容}：内容1，内容2，内容3\ 等。 % 内容描述
+    \end{itemize}
+
+    \vspace{0.5em}
+    {\large \textbf{课程名称}}，助教 \hfill 2021年夏季 % 课程名，角色，时间
+    \begin{itemize}
+        \item \textbf{主要内容}：内容1，内容2，内容3\ 等。 % 内容描述
+    \end{itemize}
+
+    \vspace{1.2em} % 项目经历区块下方的垂直间距
+    \end{minipage}
+
+    % --- 技能特长与兴趣爱好并排显示 ---
+    % 如果每行的内容不是很多，可以考虑使用 minipage，将内容分列展示
+    \begin{minipage}[t]{0.6\textwidth} % 左侧技能特长栏，宽度为文本区域的60%
+        \section[技能特长]{\makebox[\iconwidth][c]{\color{primary_color}{\faWrench}}\quad 技能特长}
+        \begin{itemize}
+        \setlength{\itemsep}{0.5em} % 在此 itemize 环境内部设置列表项之间的垂直间距为 0.5em
+            \item 熟练使用 Python、Jvav、Rust 等编程语言。 % 可选：替换为你的技能
+            \item 熟练使用 Tensorflow、Pytorch 等深度学习框架。
+            \item 熟悉 Windows 与 Linux 端开发。
+        \end{itemize}
+    \end{minipage}%
+    \hfill % 水平填充，将右侧 minipage 推开
+    \begin{minipage}[t]{0.35\textwidth} % 右侧兴趣爱好栏，宽度为文本区域的35%
+        \section[兴趣爱好]{\makebox[\iconwidth][c]{\color{primary_color}{\faStar}}\quad 兴趣爱好}
+        \begin{itemize}
+        \setlength{\itemsep}{0.5em} % 同上，设置项间距
+            \item 爱好1 % 可选：替换为你的爱好
+            \item 爱好2
+            \item 爱好3
+            \item 爱好4
+        \end{itemize}
+    \end{minipage}
+
+    % --- (可选) 更多页面和内容 ---
+    % \newpage % 如果需要新的一页，取消此行注释
+    % % 如有需要，可以添加额外的页面。
+    % % 不要忘记添加页眉页脚和背景相关的代码 (如果未使用自动化方案如 fancyhdr/eso-pic)。
+
+    % % --- (示例) 竞赛经历 ---
+    % \section{\makebox[\widthof{\faTrophy}][c]{\color{primary_color}{\faTrophy}}\quad 竞赛经历}
+    %     % \widthof{\faTrophy} 会自动计算 \faTrophy 图标的宽度，用于 \makebox。
+    %     % 这是一个更动态的设置图标占位宽度的方法，相比固定的 \iconwidth。
+    % \begin{table}[h!] % 表格环境，[h!] 表示 LaTeX "尽量"将表格放在此处
+    %     \begin{tabularx}{\textwidth}{Xp{\widthof{第零负责人}}p{\widthof{国家级-第100名}}p{\widthof{2030年13月}}}
+    %         % tabularx 环境，总宽度为 \textwidth。
+    %         % X: 可伸缩列，自动填充剩余宽度。
+    %         % p{width}: 固定宽度的段落列，内容会自动换行。
+    %         % \widthof{text}: 计算 "text" 的宽度，用于精确控制列宽。
+    %         \textbf{比赛1} & 第一负责人 & 国家级-第10名 & 2023年4月 \\
+    %         \textbf{比赛2} & 个人参赛 & 国家级-一等奖 & 2023年8月\\
+    %         \textbf{比赛3} & 个人参赛 & 省级-一等奖 & 2022年12月\\
+    %         % 同理，可以自己加
+    %     \end{tabularx}
+    % \end{table}
+
+    % % --- (示例) 技能特长 (如果想用不同格式或放在第二页) ---
+    % \section{\makebox[\widthof{\faWrench}][c]{\color{primary_color}{\faWrench}}\quad 技能特长}
+    % \begin{itemize}
+    %     \item 熟练使用\Cpp 、Python、Matlab编程语言。
+    %     \item 熟悉Windows与Linux端开发。
+    %     % ... (更多技能)
+    % \end{itemize}
+
+    % % --- (示例) 所获荣誉 ---
+    % \usepackage{multicol} % 如果要使用 multicols 环境，需要在导言区 \usepackage{multicol}
+    % \section{\makebox[\widthof{\faStar}][c]{\color{primary_color}{\faStar}}\quad 所获荣誉}
+    % \begin{multicols}{2} % 将内容分为两栏
+    %     \begin{itemize}
+    %         \item 某年学业先进个人
+    %         \item 某年某奖学金某等奖
+    %         % ... (更多荣誉)
+    %     \end{itemize}
+    % \end{multicols}
+
+    % % --- (示例) 其他 ---
+    % \section{\makebox[\widthof{\faInfo}][c]{\color{primary_color}{\faInfo}}\quad 其他}
+    % \begin{itemize}
+    %     \item 英语水平-CET6级xxx分
+    %     \item 计算机几级证书
+    %     % ... (其他信息)
+    % \end{itemize}
+
+\end{document}
